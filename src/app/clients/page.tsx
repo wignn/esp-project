@@ -12,7 +12,7 @@ type Client = {
   id: string
   name: string
   address: string
-  phoneNumber: string
+  phone: string
 }
 
 export default function ClientListPage() {
@@ -40,13 +40,12 @@ export default function ClientListPage() {
           (client) =>
             client.name.toLowerCase().includes(lowercasedSearch) ||
             client.address.toLowerCase().includes(lowercasedSearch) ||
-            client.phoneNumber.includes(searchTerm),
+            client.phone.includes(searchTerm),
         ),
       )
     }
   }, [searchTerm, clients])
 
-  // Function to load clients
   async function loadClients() {
     try {
       setIsLoading(true)
@@ -204,7 +203,7 @@ export default function ClientListPage() {
                       <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{client.address}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">{client.phoneNumber}</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">{client.phone}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-3">
