@@ -13,6 +13,7 @@ export async function POST(req) {
 
         return NextResponse.json({ message: "Data berhasil diterima", data: { kelembapan, suhu, ketinggianAir } }, { status: 200 });
     } catch (error) {
+        console.log("Error:", error);
         return NextResponse.json({ error: "Terjadi kesalahan server" }, { status: 500 });
     }
 }
