@@ -1,3 +1,5 @@
+import { prisma } from "@/lib/prisma";
+import axios from "axios";
 import { NextResponse } from "next/server";
 
 interface SensorData {
@@ -16,9 +18,15 @@ export async function POST(req: Request): Promise<NextResponse<ApiResponse>> {
     try {
         const body: SensorData = await req.json();
         const { kelembapan, suhu, ketinggianAir }: SensorData = body;
+        const user = await prisma.client.findMany()
 
-        if (kelembapan === undefined || suhu === undefined || ketinggianAir === undefined) {
-            return NextResponse.json({ error: "Semua field harus diisi" }, { status: 400 });
+        for (const key in user) {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/send-message`,  {
+                phone: user[key].phone,
+                message: `Kelembapan: ${kelembapan}%, Suhu: ${suhu}°C, Ketinggian Air: ${ketinggianAir} cm`
+            }).catch((error) => {
+                console.error("Error sending message:", error);
+            })
         }
 
         console.log("Data diterima:", { kelembapan, suhu, ketinggianAir });
