@@ -1,9 +1,21 @@
 import { NextResponse } from "next/server";
 
-export async function POST(req) {
+interface SensorData {
+    kelembapan: number;
+    suhu: number;
+    ketinggianAir: number;
+}
+
+interface ApiResponse {
+    message?: string;
+    data?: SensorData;
+    error?: string;
+}
+
+export async function POST(req: Request): Promise<NextResponse<ApiResponse>> {
     try {
-        const body = await req.json();
-        const { kelembapan, suhu, ketinggianAir } = body;
+        const body: SensorData = await req.json();
+        const { kelembapan, suhu, ketinggianAir }: SensorData = body;
 
         if (kelembapan === undefined || suhu === undefined || ketinggianAir === undefined) {
             return NextResponse.json({ error: "Semua field harus diisi" }, { status: 400 });
@@ -12,7 +24,7 @@ export async function POST(req) {
         console.log("Data diterima:", { kelembapan, suhu, ketinggianAir });
 
         return NextResponse.json({ message: "Data berhasil diterima", data: { kelembapan, suhu, ketinggianAir } }, { status: 200 });
-    } catch (error) {
+    } catch (error: unknown) {
         console.log("Error:", error);
         return NextResponse.json({ error: "Terjadi kesalahan server" }, { status: 500 });
     }
