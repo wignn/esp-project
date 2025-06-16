@@ -3,37 +3,48 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 
 interface SensorData {
-    kelembapan: number;
-    suhu: number;
-    ketinggianAir: number;
+  ketinggianAir: number;
 }
 
 interface ApiResponse {
-    message?: string;
-    data?: SensorData;
-    error?: string;
+  message?: string;
+  data?: SensorData;
+  error?: string;
 }
 
 export async function POST(req: Request): Promise<NextResponse<ApiResponse>> {
-    try {
-        const body: SensorData = await req.json();
-        const { kelembapan, suhu, ketinggianAir }: SensorData = body;
-        const user = await prisma.client.findMany()
+  try {
+    const body: SensorData = await req.json();
+    const {ketinggianAir }: SensorData = body;
+    const user = await prisma.client.findMany();
 
-        for (const key in user) {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/send-message`,  {
-                number: user[key].phone,
-                message: `Kelembapan: ${kelembapan}%, Suhu: ${suhu}°C, Ketinggian Air: ${ketinggianAir} cm`
-            }).catch((error) => {
-                console.error("Error sending message:", error);
-            })
-        }
+    for (const u of user) {
+      const message = `⚠️ Waspada! Ketinggian air saat ini mencapai ${ketinggianAir} cm. Harap bersiap dan perhatikan kondisi sekitar.`;
 
-        console.log("Data diterima:", { kelembapan, suhu, ketinggianAir });
-
-        return NextResponse.json({ message: "Data berhasil diterima", data: { kelembapan, suhu, ketinggianAir } }, { status: 200 });
-    } catch (error: unknown) {
-        console.log("Error:", error);
-        return NextResponse.json({ error: "Terjadi kesalahan server" }, { status: 500 });
+      await axios
+        .post(`${process.env.NEXT_PUBLIC_API_URL}/api/send-message`, {
+          number: u.phone,
+          message,
+        })
+        .catch((error) => {
+          console.error(`Gagal kirim ke ${u.phone}:`, error.message);
+        });
     }
+
+
+
+    return NextResponse.json(
+      {
+        message: "Data berhasil diterima",
+        data: {ketinggianAir },
+      },
+      { status: 200 }
+    );
+  } catch (error: unknown) {
+    console.log("Error:", error);
+    return NextResponse.json(
+      { error: "Terjadi kesalahan server" },
+      { status: 500 }
+    );
+  }
 }
