@@ -22,7 +22,7 @@ export async function POST(req: Request): Promise<NextResponse<ApiResponse>> {
 
         for (const key in user) {
             await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/send-message`,  {
-                phone: user[key].phone,
+                number: user[key].phone,
                 message: `Kelembapan: ${kelembapan}%, Suhu: ${suhu}°C, Ketinggian Air: ${ketinggianAir} cm`
             }).catch((error) => {
                 console.error("Error sending message:", error);
