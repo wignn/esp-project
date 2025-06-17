@@ -11,9 +11,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  
 }
-
 
 model users {
   id        String   @id @default(cuid())
@@ -23,6 +21,21 @@ model users {
   isAdmin   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model report {
+  id              Int      @id @default(autoincrement())
+  ketinggian       Float
+  status          String
+  expirationDate  DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum Status {
+  BAHAYA
+  WASPADA
+  AMAN
 }
 
 

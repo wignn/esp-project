@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, Home, Users, FileText, Settings, BarChart2, HelpCircle, ChevronDown } from "lucide-react"
+import { Menu, X, Home, Users, FileText } from "lucide-react"
 
 interface SidebarProps {
   className?: string
@@ -36,15 +36,11 @@ export function Sidebar({ className = "" }: SidebarProps) {
     setIsOpen(!isOpen)
   }
   const navItems = [
-    { name: "Dashboard", href: "/", icon: Home },
-    { name: "Clients", href: "/clients", icon: Users },
-    { name: "Reports", href: "/reports", icon: FileText },
-    { name: "Analytics", href: "/analytics", icon: BarChart2 },
-    { name: "Settings", href: "/settings", icon: Settings },
+    { name: "Dashboard", href: "/dashboard", icon: Home },
+    { name: "Clients", href: "/dashboard/clients", icon: Users },
+    { name: "Reports", href: "/dashboard/reports", icon: FileText }
   ]
 
-  // Support items
-  const supportItems = [{ name: "Help Center", href: "/help", icon: HelpCircle }]
 
   return (
     <>
@@ -139,79 +135,8 @@ export function Sidebar({ className = "" }: SidebarProps) {
               })}
             </ul>
 
-            {/* Support section */}
-            <div className="mt-8">
-              <h3
-                className={`px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider ${!isOpen && !isMobile ? "opacity-0 hidden" : "opacity-100"}`}
-              >
-                Support
-              </h3>
-              <ul className="space-y-1">
-                {supportItems.map((item) => {
-                  const isActive = pathname === item.href
-                  const Icon = item.icon
-
-                  return (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className={`
-                          flex items-center px-3 py-2.5 rounded-md text-sm font-medium
-                          group transition-colors
-                          ${
-                            isActive
-                              ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                          }
-                        `}
-                      >
-                        <Icon
-                          size={20}
-                          className={`flex-shrink-0 ${isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"}`}
-                        />
-                        {(isOpen || !isMobile) && (
-                          <span
-                            className={`ml-3 transition-opacity duration-200 ${!isOpen && !isMobile ? "opacity-0 hidden" : "opacity-100"}`}
-                          >
-                            {item.name}
-                          </span>
-                        )}
-                      </Link>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
           </nav>
 
-          {/* User profile */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-            <button
-              className={`
-                flex items-center w-full px-3 py-2 text-sm font-medium rounded-md
-                text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800
-                transition-colors
-              `}
-            >
-              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                <span className="text-gray-600 dark:text-gray-300 text-sm font-medium">JD</span>
-              </div>
-              {(isOpen || !isMobile) && (
-                <div
-                  className={`ml-3 transition-opacity duration-200 ${!isOpen && !isMobile ? "opacity-0 hidden" : "opacity-100"}`}
-                >
-                  <p className="text-sm font-medium">John Doe</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">john@example.com</p>
-                </div>
-              )}
-              {(isOpen || !isMobile) && (
-                <ChevronDown
-                  size={16}
-                  className={`ml-auto text-gray-500 dark:text-gray-400 transition-opacity duration-200 ${!isOpen && !isMobile ? "opacity-0 hidden" : "opacity-100"}`}
-                />
-              )}
-            </button>
-          </div>
         </div>
       </aside>
     </>

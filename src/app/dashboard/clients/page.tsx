@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react"
 import { AdminForm } from "@/components/admin-form"
 import { Modal } from "@/components/modal"
-import { Notification } from "@/components/notifikasi"
 import { fetchClients, deleteClient } from "@/lib/actions/client-action"
 import { PlusCircle, Edit, Trash2, Search, UserCircle, Loader2 } from "lucide-react"
 
-// Client type definition
 type Client = {
   id: string
   name: string
@@ -21,8 +19,11 @@ export default function ClientListPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingClient, setEditingClient] = useState<Client | null>(null)
-  const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
+  const [notification, setNotification] = useState<{
+    type: "success" | "error"
+    message: string
+  } | null>(null)
 
   // Fetch clients on component mount
   useEffect(() => {
@@ -120,11 +121,6 @@ export default function ClientListPage() {
           Add New Client
         </button>
       </div>
-
-      {notification && (
-        <Notification type={notification.type} message={notification.message} onClose={() => setNotification(null)} />
-      )}
-
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-6">
         <div className="p-4 border-b border-gray-100 dark:border-gray-700">
           <div className="relative">
@@ -239,6 +235,26 @@ export default function ClientListPage() {
       >
         <AdminForm initialData={editingClient || undefined} onSuccess={handleFormSuccess} />
       </Modal>
+      {/* Notification Banner */}
+      {notification && (
+        <div
+          className={`fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+            notification.type === "success"
+              ? "bg-green-100 border border-green-400 text-green-700"
+              : "bg-red-100 border border-red-400 text-red-700"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span>{notification.message}</span>
+            <button
+              onClick={() => setNotification(null)}
+              className="ml-4 text-lg font-semibold hover:opacity-70"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

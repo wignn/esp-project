@@ -5,7 +5,6 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { addClient, updateClient } from "@/lib/actions/client-action"
-import { Notification } from "@/components/notifikasi"
 
  const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -28,7 +27,6 @@ interface AdminFormProps {
 
 export function AdminForm({ initialData, onSuccess }: AdminFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null)
 
   // Initialize form with initial data if provided
   const form = useForm<z.infer<typeof formSchema>>({
@@ -66,11 +64,7 @@ export function AdminForm({ initialData, onSuccess }: AdminFormProps) {
         await addClient(values)
       }
 
-      // Show success message
-      setNotification({
-        type: "success",
-        message: initialData ? "Client updated successfully." : "New client added successfully.",
-      })
+
 
       // Reset form if not editing
       if (!initialData) {
@@ -83,10 +77,6 @@ export function AdminForm({ initialData, onSuccess }: AdminFormProps) {
       }
     } catch (error) {
       console.error("Error saving data:", error)
-      setNotification({
-        type: "error",
-        message: "There was a problem saving the data. Please try again.",
-      })
     } finally {
       setIsSubmitting(false)
     }
@@ -94,9 +84,6 @@ export function AdminForm({ initialData, onSuccess }: AdminFormProps) {
 
   return (
     <div className="w-full">
-      {notification && (
-        <Notification type={notification.type} message={notification.message} onClose={() => setNotification(null)} />
-      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-2">
@@ -150,6 +137,7 @@ export function AdminForm({ initialData, onSuccess }: AdminFormProps) {
           {isSubmitting ? "Saving..." : initialData ? "Update Client" : "Add Client"}
         </button>
       </form>
+
     </div>
   )
 }
