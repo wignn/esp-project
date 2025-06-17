@@ -21,7 +21,7 @@ export async function POST(req: Request): Promise<NextResponse<ApiResponse>> {
   try {
     const body: SensorData = await req.json();
     const {ketinggianAir, status }: SensorData = body;
-
+    console.log("Received data:", body);
     await prisma.report.create({
       data:{
         ketinggian: Number(ketinggianAir),
