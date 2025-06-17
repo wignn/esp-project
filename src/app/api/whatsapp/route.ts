@@ -21,7 +21,7 @@ export async function POST(req: Request): Promise<NextResponse<ApiResponse>> {
   try {
     const body: SensorData = await req.json();
     const {ketinggianAir, status }: SensorData = body;
-    console.log("Received data:", body);
+
     await prisma.report.create({
       data:{
         ketinggian: Number(ketinggianAir),
@@ -32,15 +32,13 @@ export async function POST(req: Request): Promise<NextResponse<ApiResponse>> {
     const user = await prisma.client.findMany();
 
     for (const u of user) {
-      let message;
-      if (ketinggianAir < 0) {
-        message = `⚠️ ${status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}! Ketinggian air saat ini mencapai ${ketinggianAir} cm. Harap bersiap dan perhatikan kondisi sekitar.`;
-      }
 
       await axios
         .post(`${process.env.NEXT_PUBLIC_API_URL}/api/send-message`, {
           number: u.phone,
-          message,
+          message:  `⚠️ ${status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}! Ketinggian air saat ini mencapai ${ketinggianAir} cm. Harap bersiap dan perhatikan kondisi sekitar.`
+
+,
         })
         .catch((error) => {
           console.error(`Gagal kirim ke ${u.phone}:`, error.message);
